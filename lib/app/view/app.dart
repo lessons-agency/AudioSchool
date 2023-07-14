@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:audio_school/feautres/authentication/authentication.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,7 +68,10 @@ class _AppState extends State<App> {
 
     Widget homeWidget;
     if (userData != null && apiToken != null) {
-      homeWidget = NavPage(userData: userData!, apiToken: apiToken!);
+      homeWidget = NavPage(
+        // userData: userData!, 
+        // apiToken: apiToken!
+        );
     } else {
       homeWidget = LoginPage();
     }

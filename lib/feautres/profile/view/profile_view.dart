@@ -9,10 +9,13 @@ import '../widget/profile_tabs.dart';
 import '../widget/user_status.dart';
 
 class ProfileView extends StatelessWidget {
-  final Map<String, dynamic> userData;
-  final String authToken;
+  // final Map<String, dynamic> userData;
+  // final String authToken;
 
-  const ProfileView({Key? key, required this.userData, required this.authToken})
+  const ProfileView({Key? key, 
+        // required this.userData, 
+        // required this.authToken
+        })
       : super(key: key);
 
   @override
@@ -22,8 +25,8 @@ class ProfileView extends StatelessWidget {
       child: Column(
         children: [
           UserStatus(
-            userData: userData,
-            authToken: authToken, // Use authToken instead of token
+            // userData: userData,
+            // authToken: authToken, // Use authToken instead of token
           ),
           Padding(
             padding: EdgeInsets.all(16.0),

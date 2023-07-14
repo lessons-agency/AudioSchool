@@ -7,6 +7,7 @@ import '../../authentication/provider/login_helper.dart';
 import '../../authentication/view/login_page.dart';
 import '../../theme/theme_data.dart';
 import '../view/profile_details_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileTabs extends StatefulWidget {
   const ProfileTabs({Key? key}) : super(key: key);
@@ -65,21 +66,26 @@ class _ProfileTabsState extends State<ProfileTabs> {
     },
   ];
 
-  void _logout() async {
-    // Clear token and userData
-    authToken = null;
-    token = null;
-    userData = {};
+void _logout() async {
+  try {
+    await FirebaseAuth.instance.signOut(); // Sign out with Firebase
 
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => LoginPage(),
-      ),
-    );
+    // Optionally clear any other local user data here...
+    // For example, clear API tokens and set the user as not logged in
     await LoginHelper().removeApiToken();
     await LoginHelper().setIsUserLoggedIn(false);
+
+    // Then navigate to the login page
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (route) => false,  // remove all previous routes
+    );
+  } catch (e) {
+    // Handle any errors signing out
+    print('Error while signing out: $e');
   }
+}
 
   void _toggleTheme(BuildContext context, bool value) {
     Provider.of<ThemeNotifier>(context, listen: false).setTheme(value);
@@ -116,8 +122,8 @@ class _ProfileTabsState extends State<ProfileTabs> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ProfileDetailsPage(
-                        userData: userData,
-                        token: token as String,
+                        // userData: userData,
+                        // token: token as String,
                       ),
                     ),
                   );

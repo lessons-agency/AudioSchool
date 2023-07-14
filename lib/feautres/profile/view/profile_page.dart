@@ -9,10 +9,13 @@ import '../widget/profile_text.dart';
 import 'view.dart';
 
 class ProfilePage extends StatelessWidget {
-  final Map<String, dynamic> userData;
-  final String authToken;
+  // final Map<String, dynamic> userData;
+  // final String authToken;
 
-  const ProfilePage({Key? key, required this.userData, required this.authToken})
+  const ProfilePage({Key? key, 
+      // required this.userData, 
+      // required this.authToken
+      })
       : super(key: key);
 
   @override
@@ -27,7 +30,10 @@ class ProfilePage extends StatelessWidget {
         centerTitle: false,
         title: ProfileText(),
       ),
-      body: ProfileView(userData: userData, authToken: authToken),
+      body: ProfileView(
+        // userData: userData, 
+        // authToken: authToken
+        ),
     );
   }
 }

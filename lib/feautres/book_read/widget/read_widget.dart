@@ -129,8 +129,8 @@ class _ReadScreenState extends State<ReadScreen> with WidgetsBindingObserver {
               context,
               MaterialPageRoute(
                 builder: (context) => NavPage(
-                  userData: userData!,
-                  apiToken: token as String,
+                  // userData: userData!,
+                  // apiToken: token as String,
                 ),
               ),
             );

@@ -8,9 +8,12 @@ import 'package:flutter/material.dart';
 import '../widget/profile_details.dart';
 
 class ProfileDetailsPage extends StatelessWidget {
-  final Map<String, dynamic> userData;
-  final String token;
-  ProfileDetailsPage({required this.userData, required this.token});
+  // final Map<String, dynamic> userData;
+  // final String token;
+  ProfileDetailsPage(
+    // required this.userData, 
+    // required this.token
+    );
 
   // final Widget accountIcon;
 
@@ -28,8 +31,8 @@ class ProfileDetailsPage extends StatelessWidget {
             int _currentIndex = 3;
             Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => NavPage(
-                      userData: userData,
-                      apiToken: authToken as String,
+                      // userData: userData,
+                      // apiToken: authToken as String,
                     )));
           },
         ),

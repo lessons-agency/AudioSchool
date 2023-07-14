@@ -9,14 +9,14 @@ import '../../authentication/widget/login_widget.dart' as ll;
 import '../../theme/theme_data.dart';
 
 class UserStatus extends StatefulWidget {
-  final String authToken;
+  // final String authToken;
   final bool isPremium;
 
   UserStatus({
     Key? key,
-    required this.authToken,
+    // required this.authToken,
     this.isPremium = false,
-    required Map<String, dynamic> userData,
+    // required Map<String, dynamic> userData,
   }) : super(key: key);
 
   @override
@@ -29,19 +29,19 @@ class _UserStatusState extends State<UserStatus> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _loadData();
-    _fetchUserData(widget.authToken);
+    //_fetchUserData(widget.authToken);
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _fetchUserData(widget.authToken);
+    //_fetchUserData(widget.authToken);
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    _fetchUserData(widget.authToken);
+    //_fetchUserData(widget.authToken);
     if (state == AppLifecycleState.resumed) {
       // user returned to our app
       _loadData();
@@ -92,7 +92,7 @@ class _UserStatusState extends State<UserStatus> with WidgetsBindingObserver {
   Future<Map<String, dynamic>> _fetchUserDataInit(String token) async {
     final response = await http.get(
       Uri.parse('$API_URL/users/me'),
-      headers: {'Authorization': 'Bearer ${widget.authToken}'},
+      //headers: {'Authorization': 'Bearer ${widget.authToken}'},
     );
 
     if (response.statusCode == 200 || response.statusCode == 201) {
@@ -109,7 +109,7 @@ class _UserStatusState extends State<UserStatus> with WidgetsBindingObserver {
     avatarUrl = 'https://i.ibb.co/5GVLX02/test.png';
     final bool isThemeDark = isDark(context);
     return FutureBuilder<Map<String, dynamic>>(
-      future: _fetchUserData(widget.authToken),
+      //future: _fetchUserData(widget.authToken),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.hasError) {

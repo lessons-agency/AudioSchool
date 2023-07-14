@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:audio_school/api/api.dart';
 import '../provider/login_helper.dart';
 import '../view/register_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 // const API_URL = 'http://localhost:3000/v1';
 // // Define userData as a global variable
@@ -36,6 +37,13 @@ class _LoginWidgetState extends State<LoginWidget> {
     _obscureText = true;
   }
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
   void setAuthToken(String token) {
     setState(() {
       authToken = token;
@@ -43,36 +51,23 @@ class _LoginWidgetState extends State<LoginWidget> {
   }
 
   String _errorMessage = '';
-  Future<void> _loginUser() async {
-    final email = emailController.text;
-    final password = passwordController.text;
-    final response = await http.post(
-      Uri.parse('$API_URL/auth/login'),
-      body: jsonEncode({'email': email, 'password': password}),
-      headers: {'Content-Type': 'application/json'},
-    );
-    print(response.body);
-    if (response.statusCode == 200) {
-      token = jsonDecode(response.body)['tokens']['access']['token'] as String;
-      print(token);
-      await LoginHelper().saveApiToken(token as String);
 
-      await LoginHelper().setIsUserLoggedIn(true);
-      userData = await _fetchUserData(token as String); // Use localToken here
-      print(userData);
+  Future<void> signIn(BuildContext context) async {
+    try {
+      // Try signing in the user with provided credentials
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passwordController.text.trim(),
+      );
+      // If the sign in was successful, navigate to the NavPage
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => NavPage(
-            userData: userData as Map<String, dynamic>,
-            apiToken: token as String, // Use localToken here
-          ),
+          builder: (context) => const NavPage(),
         ),
       );
-    } else {
-      // Define an initial value for userData
-      Map<String, dynamic> userData = {};
-
+    } catch (e) {
+      // If sign in was not successful, show the SnackBar with the error message
       final bool isThemeDark = isDark(context);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -88,6 +83,50 @@ class _LoginWidgetState extends State<LoginWidget> {
       );
     }
   }
+
+  // final email = emailController.text;
+  // final password = passwordController.text;
+  // final response = await http.post(
+  //   Uri.parse('$API_URL/auth/login'),
+  //   body: jsonEncode({'email': email, 'password': password}),
+  //   headers: {'Content-Type': 'application/json'},
+  // );
+  // print(response.body);
+  // if (response.statusCode == 200) {
+  //   token = jsonDecode(response.body)['tokens']['access']['token'] as String;
+  //   print(token);
+  //   await LoginHelper().saveApiToken(token as String);
+
+  //   await LoginHelper().setIsUserLoggedIn(true);
+  //   userData = await _fetchUserData(token as String); // Use localToken here
+  //   print(userData);
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => NavPage(
+  //         // userData: userData as Map<String, dynamic>,
+  //         // apiToken: token as String, // Use localToken here
+  //       ),
+  //     ),
+  //   );
+  // } else {
+  //   // Define an initial value for userData
+  //   Map<String, dynamic> userData = {};
+
+  //   final bool isThemeDark = isDark(context);
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       backgroundColor: isThemeDark ? yellowMain : blueMain,
+  //       content: Text(
+  //         'Невірний логін або пароль!',
+  //         style: TextStyle(
+  //           color: isThemeDark ? darkBG : lightBG,
+  //           fontSize: 16,
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Future<Map<String, dynamic>> _fetchUserData(String token) async {
     final response = await http.get(
@@ -149,34 +188,36 @@ class _LoginWidgetState extends State<LoginWidget> {
                   ),
                   child: Column(
                     children: [
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Column(
                           children: [
-                            TextField(
+                            TextFormField(
                               controller: emailController,
                               cursorColor: isThemeDark ? yellowMain : blueMain,
                               style: TextStyle(
-                                  color: isThemeDark ? darkBG : blueMainDark),
+                                  color: isThemeDark ? darkBG : blueMainDark,),
                               decoration: InputDecoration(
                                 hintText: 'Е-мейл',
                                 hintStyle: TextStyle(
-                                    color: isThemeDark ? darkBG : blueMainDark),
+                                    color: isThemeDark ? darkBG : blueMainDark,
+                                ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color:
-                                          isThemeDark ? yellowMain : blueMain),
+                                          isThemeDark ? yellowMain : blueMain,),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 filled: true,
                                 fillColor: Colors.white,
                               ),
+
                             ),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             Theme(
                               data: Theme.of(context)
                                   .copyWith(primaryColor: yellowMain),
@@ -185,19 +226,14 @@ class _LoginWidgetState extends State<LoginWidget> {
                                 cursorColor:
                                     isThemeDark ? yellowMain : blueMain,
                                 style: TextStyle(
-                                    color: isThemeDark ? darkBG : blueMainDark),
+                                    color: isThemeDark ? darkBG : blueMainDark,
+                                ),
                                 obscureText: _obscureText,
-                                validator: (value) {
-                                  if (value!.isEmpty) {
-                                    return 'Будь ласка введіть пароль';
-                                  }
-                                  return null;
-                                },
                                 decoration: InputDecoration(
                                   hintText: 'Пароль',
                                   hintStyle: TextStyle(
                                       color:
-                                          isThemeDark ? darkBG : blueMainDark),
+                                          isThemeDark ? darkBG : blueMainDark,),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(8),
                                   ),
@@ -205,7 +241,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                                     borderSide: BorderSide(
                                         color: isThemeDark
                                             ? yellowMain
-                                            : blueMain),
+                                            : blueMain,),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   filled: true,
@@ -230,7 +266,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                           ],
                         ),
                       ),
-                      SizedBox(height: 0),
+                      const SizedBox(height: 0),
                       _errorMessage.isNotEmpty
                           ? Align(
                               alignment: Alignment.topLeft,
@@ -259,7 +295,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                             //     builder: (context) => const NavPage(),
                             //   ),
                             // );
-                            _loginUser();
+
+                            signIn(context);
                           },
                           child: Text(
                             'Увійти',
@@ -373,9 +410,9 @@ class _LoginWidgetState extends State<LoginWidget> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => NavPage(
-                                      apiToken: '',
-                                      userData: {},
-                                    ),
+                                        // apiToken: '',
+                                        // userData: {},
+                                        ),
                                   ),
                                 );
                               },

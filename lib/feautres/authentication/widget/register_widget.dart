@@ -88,8 +88,8 @@ class _RegisterWidgetState extends State<RegisterWidget> {
         context,
         MaterialPageRoute(
           builder: (context) => NavPage(
-            userData: userData as Map<String, dynamic>,
-            apiToken: token as String,
+            // userData: userData as Map<String, dynamic>,
+            // apiToken: token as String,
           ),
         ),
       );

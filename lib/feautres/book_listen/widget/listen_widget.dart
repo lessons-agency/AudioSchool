@@ -194,8 +194,8 @@ class _PlayScreenState extends State<PlayScreen> with WidgetsBindingObserver {
               context,
               MaterialPageRoute(
                 builder: (context) => NavPage(
-                  userData: userData!,
-                  apiToken: token as String,
+                  // userData: userData!,
+                  // apiToken: token as String,
                 ),
               ),
             );
